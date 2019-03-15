@@ -10,45 +10,45 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
-import in.notesmart.launcher.Model.AppsData;
+import in.notesmart.launcher.Model.AppsDataPinned;
 
 @Dao
 public interface AppsDataDao {
 
     /**
-     * @param appsData
+     * @param appsDataPinned
      */
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    void insertAppsData(AppsData appsData);
+    void insertAppsData(AppsDataPinned appsDataPinned);
 
     /**
-     * @param appsData to remove
+     * @param appsDatumPinneds to remove
      */
     @Delete
-    void deteleAppsData(AppsData... appsData);
+    void deteleAppsData(AppsDataPinned... appsDatumPinneds);
 
     /**
-     * @param appsData to update
+     * @param appsDataPinned to update
      */
     @Update
-    void updateAppsData(AppsData appsData);
+    void updateAppsData(AppsDataPinned appsDataPinned);
 
     /**
-     * @return list of AppsData
+     * @return list of AppsDataPinned
      */
     @Query("SELECT * FROM apps_data")
-    List<AppsData> getAppsData();
+    List<AppsDataPinned> getAppsData();
 
     /**
      * @param app_package
-     * @return AppsData
+     * @return AppsDataPinned
      */
     @Query("SELECT * FROM apps_data WHERE app_package = :app_package")
-    AppsData getAppsDataById(String app_package);
+    AppsDataPinned getAppsDataById(String app_package);
 
     /**
      * @param app_title
-     * @result Delete AppsData by id
+     * @result Delete AppsDataPinned by id
      */
     @Query("DELETE FROM apps_data WHERE app_title =:app_title")
     void deleteAppsDataById(String app_title);

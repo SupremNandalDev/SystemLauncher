@@ -6,9 +6,9 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-import in.notesmart.launcher.Model.AppsData;
+import in.notesmart.launcher.Model.AppsDataPinned;
 
-@Database(entities = AppsData.class, version = 1)
+@Database(entities = AppsDataPinned.class, version = 1)
 public abstract class AppsDataDB extends RoomDatabase {
 
     public static final String DATABSE_NAME = "appsDataDB";

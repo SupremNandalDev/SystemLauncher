@@ -3,9 +3,6 @@ package in.notesmart.launcher;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,24 +16,23 @@ import android.view.View;
 import com.github.pwittchen.swipe.library.rx2.SimpleSwipeListener;
 import com.github.pwittchen.swipe.library.rx2.Swipe;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.notesmart.launcher.Adapters.PremAdapter;
+import in.notesmart.launcher.Adapters.PinnedAdapter;
 import in.notesmart.launcher.DataBase.AppsDataDB;
 import in.notesmart.launcher.DataBase.AppsDataDao;
-import in.notesmart.launcher.Model.AppsData;
+import in.notesmart.launcher.Model.AppsDataPinned;
 
-public class HomeScreen extends AppCompatActivity implements PremAdapter.ItemClickListener {
+public class HomeScreen extends AppCompatActivity implements PinnedAdapter.ItemClickListener {
 
     boolean runThread = false;
     AppsDataDao appsDataDao;
-    List<AppsData> tempData;
     PackageManager manager;
-    PremAdapter adapter;
+    PinnedAdapter adapter;
     RecyclerView recyclerView;
     Swipe swipe;
+    List<AppsDataPinned> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +95,7 @@ public class HomeScreen extends AppCompatActivity implements PremAdapter.ItemCli
 
     @Override
     public void onItemClick(View view, int position) {
-        Intent intent = manager.getLaunchIntentForPackage(tempData.get(position).appPackage);
+        Intent intent = manager.getLaunchIntentForPackage(list.get(position).getAppPackage());
         startActivity(intent);
     }
 
@@ -109,9 +105,10 @@ public class HomeScreen extends AppCompatActivity implements PremAdapter.ItemCli
         return super.dispatchTouchEvent(event);
     }
 
-    public void SetAdaperts() {
+    public void SetAdaperts(List<AppsDataPinned> dataPinneds) {
         recyclerView.setLayoutManager(new GridLayoutManager(
                 getApplicationContext(), 5, LinearLayoutManager.VERTICAL, false));
+        adapter = new PinnedAdapter(getApplicationContext(), dataPinneds);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
     }
@@ -125,71 +122,28 @@ public class HomeScreen extends AppCompatActivity implements PremAdapter.ItemCli
                 @Override
                 public void run() {
                     if (runThread) {
-                        Intent intent = new Intent(Intent.ACTION_MAIN, null);
-                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                        List<ResolveInfo> availableActivities = manager.queryIntentActivities(intent, 0);
-                        tempData = new ArrayList<>(appsDataDao.getAppsData());
-                        if (tempData.isEmpty()) {
+                        list = new ArrayList<>(appsDataDao.getAppsData());
+                        if (list.size() < 4) {
+                            Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                            List<ResolveInfo> availableActivities = manager.queryIntentActivities(intent, 0);
                             for (ResolveInfo ri : availableActivities) {
                                 String title = ri.loadLabel(manager).toString();
                                 if (title.contains("Messaging") || title.contains("Messages") || title.contains("WhatsApp") ||
                                         title.contains("Phone") || title.contains("Chrome") || title.contains("YouTube") || title.contains("Message")) {
-                                    AppsData data = new AppsData();
+                                    AppsDataPinned data = new AppsDataPinned();
                                     data.appTitle = title;
                                     data.appPackage = ri.activityInfo.packageName;
-                                    Drawable d = ri.loadIcon(manager);
-                                    Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.WEBP, 100, stream);
-                                    data.appIcon = stream.toByteArray();
                                     appsDataDao.insertAppsData(data);
                                 }
                             }
-                            tempData = new ArrayList<>(appsDataDao.getAppsData());
+                            list = new ArrayList<>(appsDataDao.getAppsData());
                         }
-                        adapter = new PremAdapter(getApplicationContext(), tempData, "pinned");
-                        SetAdaperts();
+                        SetAdaperts(list);
                     }
                 }
             });
             Looper.prepare();
         }
     }
-
-
-    /*private void LongItemEvent(String[] init, final String srt, final AppsData data){
-        final String packageName = data.getAppPackage();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setItems(init, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case 0:
-                        if (srt.contains("main")) {
-                            pinData.add(data);
-                            appsDataDao.insertAppsData(data);
-                        } else if (srt.contains("pinned")) {
-                            pinData.remove(data);
-                            appsDataDao.deteleAppsData(data);
-                        }
-                        return;
-                    case 1:
-                        Toast.makeText(HomeScreen.this, "Coming Soon!", Toast.LENGTH_SHORT).show();
-                        return;
-                    case 2:
-                        Intent viewApp = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        viewApp.setData(Uri.parse("package:" + packageName));
-                        startActivity(viewApp);
-                        return;
-                    case 3:
-                        Intent removeApp = new Intent(Intent.ACTION_DELETE);
-                        removeApp.setData(Uri.parse("package:" + packageName));
-                        removeApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(removeApp);
-                        RunMyThread();
-                        return;
-                }
-            }
-        }).show();
-    }*/
 }

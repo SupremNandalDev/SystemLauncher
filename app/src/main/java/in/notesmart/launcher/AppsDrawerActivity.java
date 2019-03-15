@@ -4,9 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,19 +15,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import in.notesmart.launcher.Adapters.PremAdapter;
+import in.notesmart.launcher.Adapters.DrawerAdapter;
 import in.notesmart.launcher.Model.AppsData;
 
-public class AppsDrawerActivity extends AppCompatActivity implements PremAdapter.ItemClickListener, PremAdapter.ItemLongClickListner {
+public class AppsDrawerActivity extends AppCompatActivity implements DrawerAdapter.ItemClickListener, DrawerAdapter.ItemLongClickListner {
 
     boolean runThread = false;
     RecyclerView recyclerView;
-    PremAdapter adapter;
+    DrawerAdapter adapter;
     List<AppsData> data;
     PackageManager manager;
 
@@ -76,16 +72,12 @@ public class AppsDrawerActivity extends AppCompatActivity implements PremAdapter
                 AppsData appsData = new AppsData();
                 appsData.appTitle = ri.loadLabel(manager).toString();
                 appsData.appPackage = ri.activityInfo.packageName;
-                Drawable d = ri.loadIcon(manager);
-                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.WEBP, 100, stream);
-                appsData.appIcon = stream.toByteArray();
+                appsData.appIcon = ri.loadIcon(manager);
                 data.add(appsData);
             }
         }
         Collections.sort(data);
-        adapter = new PremAdapter(getApplicationContext(), data, "main");
+        adapter = new DrawerAdapter(getApplicationContext(), data);
         recyclerView.setLayoutManager(new GridLayoutManager(
                 getApplicationContext(), 5, LinearLayoutManager.VERTICAL, false));
         adapter.setClickListener(this);

@@ -1,32 +1,12 @@
 package in.notesmart.launcher.Model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import android.graphics.drawable.Drawable;
 
-
-@Entity(tableName = "apps_data")
 public class AppsData implements Comparable<AppsData> {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-
-    @ColumnInfo(name = "app_title")
     public String appTitle;
-
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    public byte[] appIcon;
-
-    @ColumnInfo(name = "app_package")
+    public Drawable appIcon;
     public String appPackage;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getAppTitle() {
         return appTitle;
@@ -36,11 +16,11 @@ public class AppsData implements Comparable<AppsData> {
         this.appTitle = appTitle;
     }
 
-    public byte[] getAppIcon() {
+    public Drawable getAppIcon() {
         return appIcon;
     }
 
-    public void setAppIcon(byte[] appIcon) {
+    public void setAppIcon(Drawable appIcon) {
         this.appIcon = appIcon;
     }
 
