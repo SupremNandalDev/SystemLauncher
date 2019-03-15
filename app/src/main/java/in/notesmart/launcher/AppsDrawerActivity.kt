@@ -1,7 +1,6 @@
 package `in`.notesmart.launcher
 
 import `in`.notesmart.launcher.Adapters.DrawerAdapter
-import `in`.notesmart.launcher.Model.AppsData
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -84,7 +83,7 @@ class AppsDrawerActivity : AppCompatActivity(), DrawerAdapter.ItemClickListener,
 
     override fun onItemLongClick(view: View, position: Int) {
         val options = arrayOf("App Info", "Uninstall")
-        val packageName = data[position].getAppPackage()
+        val packageName = data[position].appPackage
         val builder = AlertDialog.Builder(this)
         builder.setItems(options) { dialog, which ->
             if (which == 0) {
