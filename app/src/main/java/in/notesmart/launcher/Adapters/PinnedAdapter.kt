@@ -1,5 +1,6 @@
 package `in`.notesmart.launcher.Adapters
 
+import `in`.notesmart.launcher.Model.AppsDataPinned
 import `in`.notesmart.launcher.R
 import android.content.Context
 import android.support.v7.widget.RecyclerView

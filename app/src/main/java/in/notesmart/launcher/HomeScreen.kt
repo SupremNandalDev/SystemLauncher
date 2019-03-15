@@ -3,6 +3,7 @@ package `in`.notesmart.launcher
 import `in`.notesmart.launcher.Adapters.PinnedAdapter
 import `in`.notesmart.launcher.DataBase.AppsDataDB
 import `in`.notesmart.launcher.DataBase.AppsDataDao
+import `in`.notesmart.launcher.Model.AppsDataPinned
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle

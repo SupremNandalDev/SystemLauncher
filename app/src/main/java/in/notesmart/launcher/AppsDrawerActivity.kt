@@ -1,6 +1,7 @@
 package `in`.notesmart.launcher
 
 import `in`.notesmart.launcher.Adapters.DrawerAdapter
+import `in`.notesmart.launcher.Model.AppsData
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -18,10 +19,10 @@ import java.util.*
 class AppsDrawerActivity : AppCompatActivity(), DrawerAdapter.ItemClickListener, DrawerAdapter.ItemLongClickListner {
 
     internal var runThread = false
-    internal lateinit var recyclerView: RecyclerView
-    internal lateinit var adapter: DrawerAdapter
-    internal lateinit var data: MutableList<AppsData>
-    internal lateinit var manager: PackageManager
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: DrawerAdapter
+    private lateinit var data: MutableList<AppsData>
+    private lateinit var manager: PackageManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +67,7 @@ class AppsDrawerActivity : AppCompatActivity(), DrawerAdapter.ItemClickListener,
                 data.add(appsData)
             }
         }
-        Collections.sort(data)
+        data.sort()
         adapter = DrawerAdapter(applicationContext, data)
         recyclerView.layoutManager = GridLayoutManager(
                 applicationContext, 5, LinearLayoutManager.VERTICAL, false)
